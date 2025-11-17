@@ -170,22 +170,77 @@
 import mongoose from "mongoose";
 
 // establish connection
+const MONGODB_URI =
+    "mongodb+srv://aleen:2005@cluster0.sj55gzi.mongodb.net/labDB?retryWrites=true&w=majority";
 
+async function connect() {
+    await mongoose.connect(MONGODB_URI, {
+        serverSelectionTimeoutMS: 10000,
+    });
+    console.log("Connected with Mongoose");
+}
 
 // define schema
 
-
+const studentSchema = new mongoose.Schema({
+    name: String,
+    age: Number,
+    major: String,
+});
+const Student = mongoose.model("Student", studentSchema);
 // create document
+// 3) CRUD helpers
+async function createStudents() {
+    await Student.insertMany([
+        { name: "Ali", age: 21, major: "CS" },
+        { name: "Sara", age: 23, major: "SE" },
+    ]);
+    console.log("Inserted");
+}
 
 
 // read document
 
-
+async function readStudents() {
+    const all = await Student.find();
+    console.log("All students:", all);
+}
 // update document
-
+async function updateStudent() {
+    await Student.updateOne({ name: "Ali" }, { $set: { age: 22 } });
+    console.log("Updated Ali");
+}
 
 // delete document
 
+async function deleteStudent() {
+    await Student.deleteOne({ name: "Sara" });
+    console.log("Deleted Sara");
+}
+
+//   node server.js create | read | update | delete | all
+const action = process.argv[2] || "all";
+
+(async () => {
+    try {
+        await connect();
+
+        if (action === "create" || action === "all") await createStudents();
+        if (action === "read"   || action === "all") await readStudents();
+        if (action === "update" || action === "all") await updateStudent();
+        if (action === "delete" || action === "all") await deleteStudent();
+
+        if (action === "all") {
+            const final = await Student.find();
+            console.log("Final state:", final);
+        }
+    } catch (err) {
+        console.error("Error:", err);
+    } finally {
+        await mongoose.disconnect();
+        console.log("Disconnected");
+    }
+})();
 
 
 
