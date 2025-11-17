@@ -195,7 +195,7 @@ async function createStudents() {
         { name: "Ali", age: 21, major: "CS" },
         { name: "Sara", age: 23, major: "SE" },
     ]);
-    console.log("Inserted");
+    console.log("✅ Inserted");
 }
 
 
@@ -203,19 +203,19 @@ async function createStudents() {
 
 async function readStudents() {
     const all = await Student.find();
-    console.log("All students:", all);
+    console.log("✅ All students:", all);
 }
 // update document
 async function updateStudent() {
     await Student.updateOne({ name: "Ali" }, { $set: { age: 22 } });
-    console.log("Updated Ali");
+    console.log("✅ Updated Ali");
 }
 
 // delete document
 
 async function deleteStudent() {
     await Student.deleteOne({ name: "Sara" });
-    console.log("Deleted Sara");
+    console.log("✅ Deleted Sara");
 }
 
 //   node server.js create | read | update | delete | all
